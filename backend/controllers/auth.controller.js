@@ -5,6 +5,10 @@ const bcrypt = require("bcrypt")
 
 exports.register = async (req, res)=>{
         const {pseudo, email, password, role} = req.body
+        let photopath = null;
+        if(req.file){
+            photopath = req.file.path;
+        }
 
     try {
         const userExist = await User.findOne({email})
@@ -13,7 +17,7 @@ exports.register = async (req, res)=>{
         const salt = await bcrypt.genSalt(10)
         const hash = await bcrypt.hash(password, salt)
 
-        const newuser = await User.create({pseudo, email, password: hash, role})
+        const newuser = await User.create({pseudo, email, password: hash, role, photo: photopath})
         res.status(200).json({message: "Utilisateur inscrit !"}, newuser)
     } catch (error) {
         console.error(error)
