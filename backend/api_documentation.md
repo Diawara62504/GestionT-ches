@@ -6,7 +6,7 @@ Ce backend permet de gérer des utilisateurs et des tâches avec authentificatio
 ## Base URL
 
 ```
-http://localhost:3000/
+https://gestiont-ches.onrender.com
 ```
 
 ---
