@@ -1,4 +1,3 @@
-const { object } = require("joi")
 const Task = require("../models/task.model")
 
 exports.createTask = async (req,res)=>{
@@ -26,7 +25,7 @@ exports.getTask = async (req,res)=>{
         if(status) filter.status = status
 
         const task = await Task.find(filter)
-        .populate("assigne", "name email")
+        .populate("assigne", "pseudo email")
         .populate("createdBy", "pseudo email")
         .skip((page-1)*limit)
         .limit(parseInt(limit))
