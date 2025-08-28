@@ -13,7 +13,10 @@ const cors = require("cors")
 connect()
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
-app.use(cors())
+app.use(cors({
+    origin: "http://localhost:5174",   // autorise explicitement ton frontend
+  credentials: true  
+}))
 app.use(helmet())
 app.use("/", routerA)
 app.use("/", routerT)
