@@ -5,6 +5,7 @@ const connect = require("./config/db")
 const helmet = require("helmet")
 const routerA = require("./routes/auth.route")
 const routerT = require("./routes/task.route")
+const cors = require("cors")
 
 
 
@@ -12,6 +13,7 @@ const routerT = require("./routes/task.route")
 connect()
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
+app.use(cors())
 app.use(helmet())
 app.use("/", routerA)
 app.use("/", routerT)

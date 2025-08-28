@@ -7,7 +7,7 @@ const auth = require("../middlewares/auth.middleware")
 
 
 router.post("/createTask",auth, createTask)
-router.get("/getTask",auth, getTask)
+router.get("/getTask", getTask)
 router.put("/updateTask/:id",auth, updateTask)
 router.delete("/deleteTask/:id",auth, deleteTask)
 
