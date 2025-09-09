@@ -14,15 +14,9 @@ connect()
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cors({
-  origin: (origin, callback) => {
-    const whitelist = ["http://localhost:5174", "https://tonautresite.com"];
-    if (whitelist.includes(origin)) {
-      callback(null, origin);
-    } else {
-      callback(new Error("Non autorisé par CORS"));
-    }
-  },
-  credentials: true
+  origin: "http://localhost:5173", 
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true,
 }));
 
 app.use(helmet())

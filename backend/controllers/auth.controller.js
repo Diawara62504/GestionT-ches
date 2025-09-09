@@ -40,5 +40,15 @@ exports.login = async (req,res)=>{
     }
 }
 
+exports.getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find({}, '-password'); // Exclude passwords from the result
+        res.status(200).json(users);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erreur lors de la récupération des utilisateurs." });
+    }
+};
+
 
 
