@@ -30,6 +30,11 @@ exports.getTask = async (req,res)=>{
         .skip((page-1)*limit)
         .limit(parseInt(limit))
         .sort({createdAt: -1})
+
+        if (limitValue > 0) {
+        query = query.skip((page - 1) * limitValue).limit(limitValue);
+            }
+
         res.json(task)
     } catch (error) {
         res.status(400).json({message: "Erreur d'affichage"})
