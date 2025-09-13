@@ -19,23 +19,26 @@ exports.createTask = async (req,res)=>{
 
 exports.getTask = async (req,res)=>{
     try {
-        const {page = 1, limit = 2, priorite, status,} = req.query
+        const { page = 1, limit = 2, priorite, status } = req.query
         const filter = {}
-        if(priorite) filter.priorite = priorite
-        if(status) filter.status = status
+        if (priorite) filter.priorite = priorite
+        if (status) filter.status = status
 
-        const task = await Task.find(filter)
-        .populate("assigne", "pseudo email")
-        .populate("createdBy", "pseudo email")
-        .skip((page-1)*limit)
-        .limit(parseInt(limit))
-        .sort({createdAt: -1})
+        // Construire la requête avec pagination
+        const pageNum = parseInt(page)
+        const limitNum = parseInt(limit)
 
-        if (limitValue > 0) {
-        query = query.skip((page - 1) * limitValue).limit(limitValue);
-            }
+        const tasksQuery = Task.find(filter)
+            .populate("assigne", "pseudo email")
+            .populate("createdBy", "pseudo email")
+            .sort({ createdAt: -1 })
 
-        res.json(task)
+        if (limitNum > 0) {
+            tasksQuery.skip((pageNum - 1) * limitNum).limit(limitNum)
+        }
+
+        const tasks = await tasksQuery
+        res.json(tasks)
     } catch (error) {
         res.status(400).json({message: "Erreur d'affichage"})
     }

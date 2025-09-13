@@ -17,7 +17,6 @@ app.use(express.urlencoded({extended:true}))
 app.use(cors({
 
   origin: ["http://localhost:5173", "https://gestiont-ches.onrender.com"], 
-  origin: "http://localhost:5173", 
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 }));
