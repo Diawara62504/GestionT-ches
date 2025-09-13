@@ -4,19 +4,18 @@ const bcrypt = require("bcrypt")
 
 
 exports.register = async (req, res)=>{
-        const {pseudo, email, password, role} = req.body
+        const {pseudo, email, password} = req.body
+        // Force role to 'membre' for any self-registration
+        const role = 'membre'
         let photopath = null;
         if (req.file) {
-            // Normaliser pour servir publiquement depuis /uploads
-            // On garde uniquement le segment à partir de "uploads/..."
-            const fullPath = req.file.path.replace(/\\/g, '/');
-            const idx = fullPath.indexOf('/uploads/');
-            photopath = idx >= 0 ? fullPath.substring(idx + 1) : `uploads/${req.file.filename}`;
+            // Stocker uniquement le chemin relatif "uploads/..."
+            photopath = `uploads/${req.file.filename}`;
         }
 
     try {
         const userExist = await User.findOne({email})
-        if(userExist){return res.json({message: "Cet email existe déjà"})}
+        if(userExist){return res.status(400).json({message: "Cet email existe déjà"})}
 
         const salt = await bcrypt.genSalt(10)
         const hash = await bcrypt.hash(password, salt)
@@ -70,5 +69,21 @@ exports.getAllUsers = async (req, res) => {
     }
 };
 
-
-
+exports.deleteUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        // Interdire la suppression de soi-même pour éviter de perdre le dernier admin
+        if (req.user?._id?.toString() === id) {
+            return res.status(400).json({ message: "Vous ne pouvez pas supprimer votre propre compte." });
+        }
+        const existing = await User.findById(id);
+        if (!existing) {
+            return res.status(404).json({ message: "Utilisateur non trouvé." });
+        }
+        await existing.deleteOne();
+        return res.status(200).json({ message: "Utilisateur supprimé avec succès.", id });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erreur lors de la suppression de l'utilisateur." });
+    }
+};

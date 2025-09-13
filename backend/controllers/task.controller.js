@@ -70,16 +70,15 @@ exports.updateTask = async (req, res)=>{
 exports.deleteTask = async (req, res)=>{
     try {
         const task = await Task.findById(req.params.id)
-        if(!task){return res.json({message: "Tâche non trouvé !"})}
+        if(!task){return res.status(404).json({message: "Tâche non trouvée !"})}
         if(task.createdBy.toString()!==req.user._id.toString() && req.user.role !=="admin"){return res.status(403).json({message: "Non autorisé !"})}
-        await Task.deleteOne()
 
-            const populatedTask = await Task.findById(task._id)
-            .populate("assigne", "pseudo email")
-            .populate("createdBy", "pseudo email");
+        // Supprimer uniquement cette tâche
+        await task.deleteOne();
 
-        res.json({message: "Tâche supprimée avec succès !"}, populatedTask )
+        return res.json({message: "Tâche supprimée avec succès !", id: req.params.id})
     } catch (error) {
-        res.status(400).json({message: "Erreur de suppression !"})
+        console.error(error)
+        res.status(400).json({message: "Erreur de suppression !", error})
     }
 }

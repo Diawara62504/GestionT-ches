@@ -29,8 +29,12 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')))
 app.use("/auth", routerA)
 app.use("/task", routerT)
 
+const { ensureAdminExists } = require('./config/seedAdmin');
+
 const port = process.env.PORT
 
-app.listen(port, ()=>{
+app.listen(port, async ()=>{
     console.log("Démarrage du serveur sur http://localhost:"+port)
+    // Seed admin after DB is connected and server is up
+    await ensureAdminExists();
 });
